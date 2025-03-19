@@ -1,0 +1,26 @@
+{
+  "name": "youtube-downloader-api",
+  "version": "1.0.0",
+  "description": "A simple API to search YouTube videos and download them as MP4 or MP3.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-yt-dl": "^2.2.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "youtube",
+    "api",
+    "mp3",
+    "mp4",
+    "download"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
