@@ -2,11 +2,10 @@ const express = require('express');
 const { search, ytmp3, channel } = require('@vreden/youtube_scraper');
 
 const app = express();
-app.use(express.json());
 
-// Endpoint to convert YouTube video to MP3
-app.post('/ytmp3', async (req, res) => {
-    const { url, quality } = req.body;
+// Endpoint to convert YouTube video to MP3 (GET method)
+app.get('/ytmp3', async (req, res) => {
+    const { url, quality } = req.query; // Use query parameters
 
     if (!url || !quality) {
         return res.status(400).json({ error: 'URL and quality are required' });
@@ -27,9 +26,9 @@ app.post('/ytmp3', async (req, res) => {
     }
 });
 
-// Endpoint to search YouTube videos
-app.post('/search', async (req, res) => {
-    const { query } = req.body;
+// Endpoint to search YouTube videos (GET method)
+app.get('/search', async (req, res) => {
+    const { query } = req.query; // Use query parameters
 
     if (!query) {
         return res.status(400).json({ error: 'Query is required' });
@@ -47,9 +46,9 @@ app.post('/search', async (req, res) => {
     }
 });
 
-// Endpoint to fetch channel information
-app.post('/channel', async (req, res) => {
-    const { query } = req.body;
+// Endpoint to fetch channel information (GET method)
+app.get('/channel', async (req, res) => {
+    const { query } = req.query; // Use query parameters
 
     if (!query) {
         return res.status(400).json({ error: 'Query is required' });
