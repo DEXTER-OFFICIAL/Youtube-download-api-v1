@@ -1,54 +1,74 @@
 const express = require('express');
-const ytdl = require('node-yt-dl');
+const { search, ytmp3, channel } = require('@vreden/youtube_scraper');
 
 const app = express();
-const port = 3000;
+app.use(express.json());
 
-// Endpoint to search for videos
-app.get('/search', async (req, res) => {
-    const query = req.query.q;
+// Endpoint to convert YouTube video to MP3
+app.post('/ytmp3', async (req, res) => {
+    const { url, quality } = req.body;
+
+    if (!url || !quality) {
+        return res.status(400).json({ error: 'URL and quality are required' });
+    }
+
+    try {
+        const result = await ytmp3(url, quality);
+        if (result.status) {
+            res.json({
+                downloadLink: result.download,
+                metadata: result.metadata,
+            });
+        } else {
+            res.status(500).json({ error: result.result });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Endpoint to search YouTube videos
+app.post('/search', async (req, res) => {
+    const { query } = req.body;
+
     if (!query) {
-        return res.status(400).json({ error: 'Query parameter "q" is required' });
+        return res.status(400).json({ error: 'Query is required' });
     }
 
     try {
-        const result = await ytdl.search(query);
-        res.json(result);
+        const result = await search(query);
+        if (result.status) {
+            res.json({ results: result.results });
+        } else {
+            res.status(500).json({ error: result.result });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Endpoint to download video as MP4
-app.get('/ytmp4', async (req, res) => {
-    const url = req.query.url;
-    if (!url) {
-        return res.status(400).json({ error: 'Query parameter "url" is required' });
+// Endpoint to fetch channel information
+app.post('/channel', async (req, res) => {
+    const { query } = req.body;
+
+    if (!query) {
+        return res.status(400).json({ error: 'Query is required' });
     }
 
     try {
-        const result = await ytdl.mp4(url);
-        res.json(result);
+        const result = await channel(query);
+        if (result.status) {
+            res.json({ results: result.results });
+        } else {
+            res.status(500).json({ error: result.result });
+        }
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
-// Endpoint to download audio as MP3
-app.get('/ytmp3', async (req, res) => {
-    const url = req.query.url;
-    if (!url) {
-        return res.status(400).json({ error: 'Query parameter "url" is required' });
-    }
-
-    try {
-        const result = await ytdl.mp3(url);
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
