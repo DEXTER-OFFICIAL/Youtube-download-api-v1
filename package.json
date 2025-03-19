@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "express": "^4.18.2",
-    "node-yt-dl": "^2.2.5"
+    "@vreden/youtube_scraper": "^1.2.7"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
